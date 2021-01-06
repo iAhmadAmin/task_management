@@ -12,11 +12,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
+  date_picker_timeline: ^1.2.1
   flutter_icons: ^1.1.0
+  flutter_staggered_animations: ^0.1.2
   get: ^3.24.0
   get_storage: ^1.4.0
   google_fonts: ^1.1.1
-  calendar_timeline: ^0.7.0
 
 dev_dependencies:
   flutter_test:

@@ -53,7 +53,7 @@ TextStyle get subHeadingTextStyle {
     textStyle: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w400,
-        color: Get.isDarkMode ? Colors.white : Colors.black),
+        color: Get.isDarkMode ? Colors.grey[200] : Colors.grey),
   );
 }
 
