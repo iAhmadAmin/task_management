@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_management/ui/theme.dart';
 
-class InputFieldTitle extends StatelessWidget {
+class InputField extends StatelessWidget {
   final String title;
   final TextEditingController controller;
   final String hint;
   final Widget widget;
-  final bool isDescription;
 
-  const InputFieldTitle(
+  const InputField(
       {@required this.title,
-      this.isDescription = false,
       this.controller,
       @required this.hint,
       this.widget});
@@ -19,26 +17,26 @@ class InputFieldTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(top: 12.0),
+        margin: EdgeInsets.only(top: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: subHeadingTextStyle,
+              style: titleTextStle,
             ),
             SizedBox(
               height: 8.0,
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              height: isDescription ? 120 : 50,
+              padding: EdgeInsets.only(left: 14.0),
+              height: 52,
               decoration: BoxDecoration(
                   border: Border.all(
                     width: 1.0,
                     color: Colors.grey,
                   ),
-                  borderRadius: BorderRadius.circular(8.0)),
+                  borderRadius: BorderRadius.circular(12.0)),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -48,15 +46,10 @@ class InputFieldTitle extends StatelessWidget {
                       //cursorColor: Colors.grey[300],
                       readOnly: widget == null ? false : true,
                       controller: controller,
-                      style: bodyTextStyle,
-                      maxLines: isDescription ? 5 : 1,
-                      // minLines: 3,
+                      style: subTitleTextStle,
                       decoration: InputDecoration(
                         hintText: hint,
-                        hintStyle: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0),
+                        hintStyle: subTitleTextStle,
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: context.theme.backgroundColor,

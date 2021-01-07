@@ -15,8 +15,10 @@ class _TimeLineState extends State<TimeLine> {
   List<Task> tasks = [
     Task(
       title: "Design UI for iphone",
-      startTime: DateTime.parse("2021-01-07 20:00:00Z"),
-      endTime: DateTime.parse("2021-01-07 22:00:00Z"),
+      //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
+      //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
+      startTime: TimeOfDay(hour: 8, minute: 30),
+      endTime: TimeOfDay(hour: 10, minute: 30),
       note: "Designing iphon 11 pro app using the color pallete given.",
       date: DateTime.parse("2021-01-07"),
       color: yellowClr,
@@ -24,8 +26,10 @@ class _TimeLineState extends State<TimeLine> {
     ),
     Task(
       title: "Design UI for iphone",
-      startTime: DateTime.parse("2021-01-07 20:00:00Z"),
-      endTime: DateTime.parse("2021-01-07 22:00:00Z"),
+      //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
+      //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
+      startTime: TimeOfDay(hour: 11, minute: 30),
+      endTime: TimeOfDay(hour: 12, minute: 30),
       note: "Designing iphon 11 pro app using the color pallete given.",
       date: DateTime.parse("2021-01-07"),
       color: purpleClr,
@@ -33,8 +37,10 @@ class _TimeLineState extends State<TimeLine> {
     ),
     Task(
       title: "Design UI for iphone",
-      startTime: DateTime.parse("2021-01-07 20:00:00Z"),
-      endTime: DateTime.parse("2021-01-07 22:00:00Z"),
+      //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
+      //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
+      startTime: TimeOfDay(hour: 2, minute: 30),
+      endTime: TimeOfDay(hour: 4, minute: 30),
       note: "Designing iphon 11 pro app using the color pallete given.",
       date: DateTime.parse("2021-01-07"),
       color: pinkClr,

@@ -5,8 +5,8 @@ class Task {
   final String note;
   final bool isCompleted;
   final DateTime date;
-  final DateTime startTime;
-  final DateTime endTime;
+  final TimeOfDay startTime;
+  final TimeOfDay endTime;
   final Color color;
   final DateTime reminderBefore;
   final DateTime repeat;

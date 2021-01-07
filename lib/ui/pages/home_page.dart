@@ -2,9 +2,12 @@ import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:task_management/ui/pages/add_task_page.dart';
 import 'package:task_management/ui/size_config.dart';
 import 'package:task_management/ui/theme.dart';
+import 'package:task_management/ui/widgets/button.dart';
 import 'package:task_management/ui/widgets/timeline.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -24,24 +27,19 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
+      appBar: _appBar(),
       backgroundColor: context.theme.backgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 12,
-            ),
-            _topBar(),
-            _addTaskBar(),
-            _dateBar(),
-            SizedBox(
-              height: 12,
-            ),
-            Expanded(
-              child: TimeLine(),
-            ),
-          ],
-        ),
+      body: Column(
+        children: [
+          _addTaskBar(),
+          _dateBar(),
+          SizedBox(
+            height: 12,
+          ),
+          Expanded(
+            child: TimeLine(),
+          ),
+        ],
       ),
     );
   }
@@ -128,7 +126,7 @@ class _HomePageState extends State<HomePage> {
 
   _addTaskBar() {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 20),
+      margin: EdgeInsets.only(bottom: 12),
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _formatDate(DateTime.now().toString()),
+                DateFormat.yMMMMd().format(DateTime.now()),
                 style: subHeadingTextStyle,
               ),
               Text(
@@ -146,31 +144,22 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          Container(
-            height: 50,
-            width: 110,
-            decoration: BoxDecoration(
-              color: primaryClr,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Text(
-                "+ Add Task",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+          MyButton(
+            label: "+ Add Task",
+            onTap: () {
+              Get.to(AddTaskPage());
+            },
           ),
         ],
       ),
     );
   }
 
-  _topBar() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        GestureDetector(
+  _appBar() {
+    return AppBar(
+        elevation: 0,
+        backgroundColor: context.theme.backgroundColor,
+        leading: GestureDetector(
           onTap: () {
             if (Get.isDarkMode)
               Get.changeThemeMode(ThemeMode.light);
@@ -181,18 +170,14 @@ class _HomePageState extends State<HomePage> {
               Get.isDarkMode ? FlutterIcons.sun_fea : FlutterIcons.moon_fea,
               color: Get.isDarkMode ? Colors.white : darkGreyClr),
         ),
-        CircleAvatar(
-          radius: 30,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(40),
-            child: Image.network(
-              "https://manofmany.com/wp-content/uploads/2019/06/50-Long-Haircuts-Hairstyle-Tips-for-Men-2.jpg",
-              height: 60,
-              fit: BoxFit.cover,
-            ),
+        actions: [
+          CircleAvatar(
+            radius: 16,
+            backgroundImage: AssetImage("images/girl.jpg"),
           ),
-        ),
-      ]),
-    );
+          SizedBox(
+            width: 20,
+          ),
+        ]);
   }
 }
