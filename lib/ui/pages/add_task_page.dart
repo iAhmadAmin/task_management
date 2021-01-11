@@ -21,6 +21,22 @@ class _AddTaskPageState extends State<AddTaskPage> {
   var _endTime = TimeOfDay(hour: 12, minute: 30);
   int _selectedColor = 0;
 
+  int _selectedRemind = 5;
+  List<int> remindList = [
+    5,
+    10,
+    15,
+    20,
+  ];
+
+  String _selectedRepeat = 'None';
+  List<String> repeatList = [
+    'None',
+    'Daily',
+    'Weekly',
+    'Monthly',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,13 +117,65 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
               InputField(
                 title: "Remind",
-                hint: "5 minutes early",
-                widget: Container(),
+                hint: "$_selectedRemind minutes early",
+                widget: Row(
+                  children: [
+                    DropdownButton<String>(
+                        //value: _selectedRemind.toString(),
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.grey,
+                        ),
+                        iconSize: 32,
+                        elevation: 4,
+                        style: subTitleTextStle,
+                        underline: Container(height: 0),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            _selectedRemind = int.parse(newValue);
+                          });
+                        },
+                        items: remindList
+                            .map<DropdownMenuItem<String>>((int value) {
+                          return DropdownMenuItem<String>(
+                            value: value.toString(),
+                            child: Text(value.toString()),
+                          );
+                        }).toList()),
+                    SizedBox(width: 6),
+                  ],
+                ),
               ),
               InputField(
                 title: "Repeat",
-                hint: "Weekly",
-                widget: Container(),
+                hint: _selectedRepeat,
+                widget: Row(
+                  children: [
+                    DropdownButton<String>(
+                        //value: _selectedRemind.toString(),
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.grey,
+                        ),
+                        iconSize: 32,
+                        elevation: 4,
+                        style: subTitleTextStle,
+                        underline: Container(height: 0),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            _selectedRepeat = newValue;
+                          });
+                        },
+                        items: repeatList
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList()),
+                    SizedBox(width: 6),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 18.0,

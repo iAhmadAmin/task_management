@@ -1,13 +1,17 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:task_management/models/task.dart';
 import 'package:task_management/ui/pages/add_task_page.dart';
 import 'package:task_management/ui/size_config.dart';
 import 'package:task_management/ui/theme.dart';
 import 'package:task_management/ui/widgets/button.dart';
-import 'package:task_management/ui/widgets/timeline.dart';
 import 'package:intl/intl.dart';
+import 'package:task_management/ui/widgets/task_tile.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,6 +20,43 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String selectedDate;
+
+  List<Task> tasks = [
+    Task(
+      title: "Design UI for iphone",
+      //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
+      //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
+      startTime: TimeOfDay(hour: 8, minute: 30),
+      endTime: TimeOfDay(hour: 10, minute: 30),
+      note:
+          "Designing iphon 11 pro app using the color pallete given Designing iphon 11 pro app using the color pallete given.",
+      date: DateTime.parse("2021-01-07"),
+      color: yellowClr,
+      isCompleted: true,
+    ),
+    Task(
+      title: "Design UI for iphone",
+      //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
+      //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
+      startTime: TimeOfDay(hour: 11, minute: 30),
+      endTime: TimeOfDay(hour: 12, minute: 30),
+      note: "Designing iphon 11 pro app using the color pallete given.",
+      date: DateTime.parse("2021-01-07"),
+      color: purpleClr,
+      isCompleted: false,
+    ),
+    Task(
+      title: "Design UI for iphone",
+      //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
+      //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
+      startTime: TimeOfDay(hour: 2, minute: 30),
+      endTime: TimeOfDay(hour: 4, minute: 30),
+      note: "Designing iphon 11 pro app using.",
+      date: DateTime.parse("2021-01-07"),
+      color: pinkClr,
+      isCompleted: false,
+    ),
+  ];
 
   @override
   initState() {
@@ -37,7 +78,8 @@ class _HomePageState extends State<HomePage> {
             height: 12,
           ),
           Expanded(
-            child: TimeLine(),
+            child: _noTaskMsg(),
+            //_showTasks(),
           ),
         ],
       ),
@@ -53,18 +95,23 @@ class _HomePageState extends State<HomePage> {
         initialSelectedDate: DateTime.now(),
         selectionColor: context.theme.backgroundColor,
         selectedTextColor: primaryClr,
-        dateTextStyle: TextStyle(
-          fontSize: 22.0,
-          fontWeight: FontWeight.w600,
-          color: Get.isDarkMode ? Colors.grey[100] : Colors.grey[800],
+        dateTextStyle: GoogleFonts.lato(
+          textStyle: TextStyle(
+            fontSize: 20.0,
+            color: Colors.grey,
+          ),
         ),
-        dayTextStyle: TextStyle(
-          fontSize: 12.0,
-          color: Get.isDarkMode ? Colors.grey[100] : Colors.grey[800],
+        dayTextStyle: GoogleFonts.lato(
+          textStyle: TextStyle(
+            fontSize: 10.0,
+            color: Colors.grey,
+          ),
         ),
-        monthTextStyle: TextStyle(
-          fontSize: 12.0,
-          color: Get.isDarkMode ? Colors.grey[100] : Colors.grey[800],
+        monthTextStyle: GoogleFonts.lato(
+          textStyle: TextStyle(
+            fontSize: 10.0,
+            color: Colors.grey,
+          ),
         ),
         // deactivatedColor: Colors.white,
 
@@ -179,5 +226,51 @@ class _HomePageState extends State<HomePage> {
             width: 20,
           ),
         ]);
+  }
+
+  _showTasks() {
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: tasks.length,
+        itemBuilder: (context, index) {
+          Task task = tasks[index];
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 375),
+            child: SlideAnimation(
+              horizontalOffset: 50.0,
+              child: FadeInAnimation(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TaskTile(task),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  _noTaskMsg() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          "images/task.svg",
+          height: 100,
+          semanticsLabel: 'Task',
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: Text(
+            "You have not any task for today!\nAdd new task to make your day productive.",
+            textAlign: TextAlign.center,
+            style: subTitleTextStle,
+          ),
+        )
+      ],
+    );
   }
 }

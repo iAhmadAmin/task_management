@@ -53,7 +53,8 @@ TextStyle get titleTextStle {
 TextStyle get subTitleTextStle {
   return GoogleFonts.lato(
     textStyle: TextStyle(
-        fontSize: 17, color: Get.isDarkMode ? Colors.white : Colors.grey[700]),
+        fontSize: 16,
+        color: Get.isDarkMode ? Colors.grey[400] : Colors.grey[700]),
   );
 }
 
