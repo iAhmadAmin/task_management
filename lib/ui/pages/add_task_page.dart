@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:task_management/controllers/task_controller.dart';
+import 'package:task_management/models/task.dart';
 import 'package:task_management/ui/theme.dart';
 import 'package:task_management/ui/widgets/button.dart';
 import 'package:task_management/ui/widgets/input_field.dart';
@@ -12,13 +14,15 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final TaskController _taskController = Get.find<TaskController>();
+
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
 
-  var _startTime = TimeOfDay(hour: 8, minute: 30);
-  var _endTime = TimeOfDay(hour: 12, minute: 30);
+  String _startTime = "8:30 AM";
+  String _endTime = "9:30 AM";
   int _selectedColor = 0;
 
   int _selectedRemind = 5;
@@ -65,8 +69,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   hint: "Enter note here.",
                   controller: _noteController),
               InputField(
-                title: "Submission Date",
-                hint: DateFormat.yMMMMEEEEd().format(_selectedDate),
+                title: "Date",
+                hint: DateFormat.yMd().format(_selectedDate),
                 widget: IconButton(
                   icon: (Icon(
                     FlutterIcons.calendar_ant,
@@ -83,7 +87,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   Expanded(
                     child: InputField(
                       title: "Start Time",
-                      hint: _startTime.format(context),
+                      hint: _startTime,
                       widget: IconButton(
                         icon: (Icon(
                           FlutterIcons.clock_faw5,
@@ -101,7 +105,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   Expanded(
                     child: InputField(
                       title: "End Time",
-                      hint: _endTime.format(context),
+                      hint: _endTime,
                       widget: IconButton(
                         icon: (Icon(
                           FlutterIcons.clock_faw5,
@@ -187,7 +191,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   _colorChips(),
                   MyButton(
                     label: "Create Task",
-                    onTap: () {},
+                    onTap: () {
+                      _validateInputs();
+                    },
                   ),
                 ],
               ),
@@ -199,6 +205,29 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
       ),
     );
+  }
+
+  _validateInputs() {
+    if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+      _addTaskToDB();
+    } else if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
+      Get.snackbar(
+        "Required",
+        "All fields are required.",
+        snackPosition: SnackPosition.BOTTOM,
+        overlayColor: context.theme.backgroundColor,
+      );
+    } else {
+      print("############ SOMETHING BAD HAPPENED #################");
+    }
+  }
+
+  _addTaskToDB() async {
+    await _taskController.addTask(
+        task: Task(
+      note: _noteController.text,
+      title: _titleController.text,
+    ));
   }
 
   _colorChips() {
@@ -268,48 +297,51 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ]);
   }
 
-  _compareTime() {
-    print("compare time");
-    print(_startTime);
-    print(_endTime);
+  // _compareTime() {
+  //   print("compare time");
+  //   print(_startTime);
+  //   print(_endTime);
 
-    var _start = toDouble(_startTime);
-    var _end = toDouble(_endTime);
+  //   var _start = double.parsestartTime);
+  //   var _end = toDouble(_endTime);
 
-    print(_start);
-    print(_end);
+  //   print(_start);
+  //   print(_end);
 
-    if (_start > _end) {
-      Get.snackbar(
-        "Invalid!",
-        "Time duration must be positive.",
-        snackPosition: SnackPosition.BOTTOM,
-        overlayColor: context.theme.backgroundColor,
-      );
-    }
-  }
+  //   if (_start > _end) {
+  //     Get.snackbar(
+  //       "Invalid!",
+  //       "Time duration must be positive.",
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       overlayColor: context.theme.backgroundColor,
+  //     );
+  //   }
+  // }
 
   double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;
 
   _getTimeFromUser({@required bool isStartTime}) async {
     var _pickedTime = await _showTimePicker();
+    print(_pickedTime.format(context));
+    String _formatedTime = _pickedTime.format(context);
+    print(_formatedTime);
     if (_pickedTime == null)
       print("time canceld");
     else if (isStartTime)
       setState(() {
-        _startTime = _pickedTime;
+        _startTime = _formatedTime;
       });
     else if (!isStartTime) {
       setState(() {
-        _endTime = _pickedTime;
+        _endTime = _formatedTime;
       });
-      _compareTime();
+      //_compareTime();
     }
   }
 
   _showTimePicker() async {
     return showTimePicker(
-      initialTime: _startTime,
+      initialTime: TimeOfDay(hour: 8, minute: 30),
       initialEntryMode: TimePickerEntryMode.input,
       context: context,
     );
@@ -322,9 +354,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
         initialDatePickerMode: DatePickerMode.day,
         firstDate: DateTime(2015),
         lastDate: DateTime(2101));
-    if (_pickedDate != null)
+    if (_pickedDate != null) {
       setState(() {
         _selectedDate = _pickedDate;
       });
+    }
   }
 }

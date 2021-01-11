@@ -5,6 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:task_management/controllers/task_controller.dart';
 import 'package:task_management/models/task.dart';
 import 'package:task_management/ui/pages/add_task_page.dart';
 import 'package:task_management/ui/size_config.dart';
@@ -19,50 +20,45 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String selectedDate;
+  DateTime _selectedDate = DateTime.parse(DateTime.now().toString());
+  final _taskController = Get.put(TaskController());
 
   List<Task> tasks = [
     Task(
       title: "Design UI for iphone",
       //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
       //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
-      startTime: TimeOfDay(hour: 8, minute: 30),
-      endTime: TimeOfDay(hour: 10, minute: 30),
+      startTime: "8:30 AM",
+      endTime: "9:30 AM",
       note:
           "Designing iphon 11 pro app using the color pallete given Designing iphon 11 pro app using the color pallete given.",
-      date: DateTime.parse("2021-01-07"),
-      color: yellowClr,
+      date: "1/11/2021",
+      // color: yellowClr,
       isCompleted: true,
     ),
     Task(
       title: "Design UI for iphone",
       //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
       //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
-      startTime: TimeOfDay(hour: 11, minute: 30),
-      endTime: TimeOfDay(hour: 12, minute: 30),
+      startTime: "8:30 AM",
+      endTime: "9:30 AM",
       note: "Designing iphon 11 pro app using the color pallete given.",
-      date: DateTime.parse("2021-01-07"),
-      color: purpleClr,
+      date: "1/11/2021",
+      //  color: purpleClr,
       isCompleted: false,
     ),
     Task(
       title: "Design UI for iphone",
       //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
       //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
-      startTime: TimeOfDay(hour: 2, minute: 30),
-      endTime: TimeOfDay(hour: 4, minute: 30),
+      startTime: "8:30 AM",
+      endTime: "9:30 AM",
       note: "Designing iphon 11 pro app using.",
-      date: DateTime.parse("2021-01-07"),
-      color: pinkClr,
+      date: "1/12/2021",
+      //  color: pinkClr,
       isCompleted: false,
     ),
   ];
-
-  @override
-  initState() {
-    super.initState();
-    selectedDate = _formatDate(DateTime.now().toString());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +74,7 @@ class _HomePageState extends State<HomePage> {
             height: 12,
           ),
           Expanded(
-            child: _noTaskMsg(),
+            child: _showTasks(),
             //_showTasks(),
           ),
         ],
@@ -98,6 +94,7 @@ class _HomePageState extends State<HomePage> {
         dateTextStyle: GoogleFonts.lato(
           textStyle: TextStyle(
             fontSize: 20.0,
+            fontWeight: FontWeight.w600,
             color: Colors.grey,
           ),
         ),
@@ -117,58 +114,15 @@ class _HomePageState extends State<HomePage> {
 
         onDateChange: (date) {
           // New date selected
+
           setState(
             () {
-              selectedDate = _formatDate(date.toString());
+              _selectedDate = date;
             },
           );
         },
       ),
     );
-  }
-
-  _formatDate(String date) {
-    var dateParse = DateTime.parse(date);
-    String month;
-    switch (dateParse.month) {
-      case 1:
-        month = "January";
-        break;
-      case 2:
-        month = "February";
-        break;
-      case 3:
-        month = "March";
-        break;
-      case 4:
-        month = "April";
-        break;
-      case 5:
-        month = "May";
-        break;
-      case 6:
-        month = "June";
-        break;
-      case 7:
-        month = "July";
-        break;
-      case 8:
-        month = "August";
-        break;
-      case 9:
-        month = "September";
-        break;
-      case 10:
-        month = "October";
-        break;
-      case 11:
-        month = "November";
-        break;
-      case 12:
-        month = "December";
-        break;
-    }
-    return "${dateParse.day.toString()} $month ";
   }
 
   _addTaskBar() {
@@ -229,26 +183,31 @@ class _HomePageState extends State<HomePage> {
   }
 
   _showTasks() {
+    print(_selectedDate.toString());
     return ListView.builder(
         scrollDirection: Axis.vertical,
         itemCount: tasks.length,
         itemBuilder: (context, index) {
           Task task = tasks[index];
-          return AnimationConfiguration.staggeredList(
-            position: index,
-            duration: const Duration(milliseconds: 375),
-            child: SlideAnimation(
-              horizontalOffset: 50.0,
-              child: FadeInAnimation(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TaskTile(task),
-                  ],
+          if (task.date == DateFormat.yMd().format(_selectedDate)) {
+            return AnimationConfiguration.staggeredList(
+              position: index,
+              duration: const Duration(milliseconds: 375),
+              child: SlideAnimation(
+                horizontalOffset: 50.0,
+                child: FadeInAnimation(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TaskTile(task),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
+            );
+          } else {
+            return Container();
+          }
         });
   }
 
@@ -259,17 +218,21 @@ class _HomePageState extends State<HomePage> {
       children: [
         SvgPicture.asset(
           "images/task.svg",
-          height: 100,
+          color: primaryClr.withOpacity(0.5),
+          height: 90,
           semanticsLabel: 'Task',
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           child: Text(
-            "You have not any task for today!\nAdd new task to make your day productive.",
+            "You do not have any task for today!\nAdd a new task to make your day productive.",
             textAlign: TextAlign.center,
             style: subTitleTextStle,
           ),
-        )
+        ),
+        SizedBox(
+          height: 80,
+        ),
       ],
     );
   }
