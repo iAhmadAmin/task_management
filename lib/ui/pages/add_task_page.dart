@@ -43,6 +43,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("add Task date: " + DateFormat.yMd().format(_selectedDate));
     return Scaffold(
       backgroundColor: context.theme.backgroundColor,
       appBar: _appBar(),
@@ -210,12 +211,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
   _validateInputs() {
     if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
       _addTaskToDB();
+      Get.back();
     } else if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
       Get.snackbar(
         "Required",
         "All fields are required.",
         snackPosition: SnackPosition.BOTTOM,
-        overlayColor: context.theme.backgroundColor,
       );
     } else {
       print("############ SOMETHING BAD HAPPENED #################");
@@ -224,10 +225,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   _addTaskToDB() async {
     await _taskController.addTask(
-        task: Task(
-      note: _noteController.text,
-      title: _titleController.text,
-    ));
+      task: Task(
+        note: _noteController.text,
+        title: _titleController.text,
+        date: DateFormat.yMd().format(_selectedDate),
+        startTime: _startTime,
+        endTime: _endTime,
+        remind: _selectedRemind,
+        repeat: _selectedRepeat,
+        color: _selectedColor,
+        isCompleted: 0,
+      ),
+    );
   }
 
   _colorChips() {

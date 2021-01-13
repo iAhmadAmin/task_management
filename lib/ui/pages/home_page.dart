@@ -23,43 +23,6 @@ class _HomePageState extends State<HomePage> {
   DateTime _selectedDate = DateTime.parse(DateTime.now().toString());
   final _taskController = Get.put(TaskController());
 
-  List<Task> tasks = [
-    Task(
-      title: "Design UI for iphone",
-      //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
-      //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
-      startTime: "8:30 AM",
-      endTime: "9:30 AM",
-      note:
-          "Designing iphon 11 pro app using the color pallete given Designing iphon 11 pro app using the color pallete given.",
-      date: "1/11/2021",
-      // color: yellowClr,
-      isCompleted: true,
-    ),
-    Task(
-      title: "Design UI for iphone",
-      //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
-      //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
-      startTime: "8:30 AM",
-      endTime: "9:30 AM",
-      note: "Designing iphon 11 pro app using the color pallete given.",
-      date: "1/11/2021",
-      //  color: purpleClr,
-      isCompleted: false,
-    ),
-    Task(
-      title: "Design UI for iphone",
-      //startTime: DateTime.parse("2021-01-07 20:00:00Z"),
-      //endTime: DateTime.parse("2021-01-07 22:00:00Z"),
-      startTime: "8:30 AM",
-      endTime: "9:30 AM",
-      note: "Designing iphon 11 pro app using.",
-      date: "1/12/2021",
-      //  color: pinkClr,
-      isCompleted: false,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -73,10 +36,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: 12,
           ),
-          Expanded(
-            child: _showTasks(),
-            //_showTasks(),
-          ),
+          _showTasks(),
         ],
       ),
     );
@@ -147,8 +107,9 @@ class _HomePageState extends State<HomePage> {
           ),
           MyButton(
             label: "+ Add Task",
-            onTap: () {
-              Get.to(AddTaskPage());
+            onTap: () async {
+              await Get.to(AddTaskPage());
+              _taskController.getTasks();
             },
           ),
         ],
@@ -183,32 +144,119 @@ class _HomePageState extends State<HomePage> {
   }
 
   _showTasks() {
-    print(_selectedDate.toString());
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: tasks.length,
-        itemBuilder: (context, index) {
-          Task task = tasks[index];
-          if (task.date == DateFormat.yMd().format(_selectedDate)) {
-            return AnimationConfiguration.staggeredList(
-              position: index,
-              duration: const Duration(milliseconds: 375),
-              child: SlideAnimation(
-                horizontalOffset: 50.0,
-                child: FadeInAnimation(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TaskTile(task),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          } else {
-            return Container();
-          }
-        });
+    return Expanded(
+      child: Obx(() {
+        if (_taskController.taskList.isEmpty) {
+          return _noTaskMsg();
+        } else
+          return ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: _taskController.taskList.length,
+              itemBuilder: (context, index) {
+                Task task = _taskController.taskList[index];
+                if (task.date == DateFormat.yMd().format(_selectedDate)) {
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    duration: const Duration(milliseconds: 375),
+                    child: SlideAnimation(
+                      horizontalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                                onTap: () {
+                                  showBottomSheet(context, task);
+                                },
+                                child: TaskTile(task)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              });
+      }),
+    );
+  }
+
+  showBottomSheet(BuildContext context, Task task) {
+    Get.bottomSheet(
+      Container(
+        padding: EdgeInsets.only(top: 4),
+        height: SizeConfig.screenHeight * 0.32,
+        width: SizeConfig.screenWidth,
+        color: Get.isDarkMode ? darkHeaderClr : Colors.white,
+        child: Column(children: [
+          Container(
+            height: 6,
+            width: 120,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Get.isDarkMode ? Colors.grey[600] : Colors.grey[300]),
+          ),
+          Spacer(),
+          _buildBottomSheetButton(
+              label: "Task Completed",
+              onTap: () {
+                Get.back();
+              },
+              clr: primaryClr),
+          _buildBottomSheetButton(
+              label: "Delete Task",
+              onTap: () {
+                _taskController.deleteTask(task);
+                Get.back();
+              },
+              clr: Colors.red[300]),
+          SizedBox(
+            height: 20,
+          ),
+          _buildBottomSheetButton(
+              label: "Close",
+              onTap: () {
+                Get.back();
+              },
+              isClose: true),
+          SizedBox(
+            height: 20,
+          ),
+        ]),
+      ),
+    );
+  }
+
+  _buildBottomSheetButton(
+      {String label, Function onTap, Color clr, bool isClose = false}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 4),
+        height: 55,
+        width: SizeConfig.screenWidth * 0.9,
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 2,
+            color: isClose
+                ? Get.isDarkMode
+                    ? Colors.grey[600]
+                    : Colors.grey[300]
+                : clr,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          color: isClose ? Colors.transparent : clr,
+        ),
+        child: Center(
+            child: Text(
+          label,
+          style: isClose
+              ? titleTextStle
+              : titleTextStle.copyWith(color: Colors.white),
+        )),
+      ),
+    );
   }
 
   _noTaskMsg() {
@@ -225,7 +273,7 @@ class _HomePageState extends State<HomePage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           child: Text(
-            "You do not have any task for today!\nAdd a new task to make your day productive.",
+            "You do not have any tasks yet!\nAdd new tasks to make your days productive.",
             textAlign: TextAlign.center,
             style: subTitleTextStle,
           ),

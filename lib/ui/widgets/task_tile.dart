@@ -21,7 +21,7 @@ class TaskTile extends StatelessWidget {
         //  width: SizeConfig.screenWidth * 0.78,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: task.color ?? purpleClr,
+          color: _getBGClr(task.color),
         ),
         child: Row(children: [
           Expanded(
@@ -77,7 +77,7 @@ class TaskTile extends StatelessWidget {
           RotatedBox(
             quarterTurns: 3,
             child: Text(
-              task.isCompleted ? "DONE" : "IN PROGRESS",
+              task.isCompleted == 1 ? "DONE" : "IN PROGRESS",
               style: GoogleFonts.lato(
                 textStyle: TextStyle(
                     fontSize: 10,
@@ -89,5 +89,18 @@ class TaskTile extends StatelessWidget {
         ]),
       ),
     );
+  }
+
+  _getBGClr(int no) {
+    switch (no) {
+      case 0:
+        return purpleClr;
+      case 1:
+        return pinkClr;
+      case 2:
+        return yellowClr;
+      default:
+        return purpleClr;
+    }
   }
 }

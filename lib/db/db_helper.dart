@@ -17,7 +17,7 @@ class DBHelper {
         version: _version,
         onCreate: (db, version) {
           return db.execute(
-            "CREATE TABLE $_tableName(id INTEGER PRIMARY KEY, title STRING, note TEXT)",
+            "CREATE TABLE $_tableName(id INTEGER PRIMARY KEY AUTOINCREMENT, title STRING, note TEXT, date STRING, startTime STRING, endTime STRING, remind INTEGER, repeat STRING, color INTEGER, isCompleted BOOL)",
           );
         },
       );
@@ -26,12 +26,16 @@ class DBHelper {
     }
   }
 
-  static Future<int> insert(Task task) async =>
-      await _db.insert(_tableName, task.toJson());
+  static Future<int> insert(Task task) async {
+    print("insert function called");
+    return await _db.insert(_tableName, task.toJson());
+  }
 
   static Future<int> delete(Task task) async =>
       await _db.delete(_tableName, where: 'id = ?', whereArgs: [task.id]);
 
-  static Future<List<Map<String, dynamic>>> query() async =>
-      _db.query(_tableName);
+  static Future<List<Map<String, dynamic>>> query() async {
+    print("query function called");
+    return _db.query(_tableName);
+  }
 }
