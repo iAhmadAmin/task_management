@@ -1,6 +1,7 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   DateTime _selectedDate = DateTime.parse(DateTime.now().toString());
   final _taskController = Get.put(TaskController());
+  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     FlutterLocalNotificationsPlugin();
+
+  // void initState() {
+  //   super.initState();
+  //   var initializationSettingsAndroid =
+  //       AndroidInitializationSettings('Task Management');
+  //   var initializationSettingsIOs = IOSInitializationSettings();
+
+  //   var initSetttings = InitializationSettings(
+  //       initializationSettingsAndroid);
+
+  //   // flutterLocalNotificationsPlugin.initialize(initSetttings,
+  //   //     onSelectNotification: onSelectNotification);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +202,9 @@ class _HomePageState extends State<HomePage> {
     Get.bottomSheet(
       Container(
         padding: EdgeInsets.only(top: 4),
-        height: SizeConfig.screenHeight * 0.32,
+        height: task.isCompleted == 1
+            ? SizeConfig.screenHeight * 0.24
+            : SizeConfig.screenHeight * 0.32,
         width: SizeConfig.screenWidth,
         color: Get.isDarkMode ? darkHeaderClr : Colors.white,
         child: Column(children: [
@@ -198,12 +216,15 @@ class _HomePageState extends State<HomePage> {
                 color: Get.isDarkMode ? Colors.grey[600] : Colors.grey[300]),
           ),
           Spacer(),
-          _buildBottomSheetButton(
-              label: "Task Completed",
-              onTap: () {
-                Get.back();
-              },
-              clr: primaryClr),
+          task.isCompleted == 1
+              ? Container()
+              : _buildBottomSheetButton(
+                  label: "Task Completed",
+                  onTap: () {
+                    _taskController.markTaskCompleted(task.id);
+                    Get.back();
+                  },
+                  clr: primaryClr),
           _buildBottomSheetButton(
               label: "Delete Task",
               onTap: () {
