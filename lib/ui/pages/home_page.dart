@@ -1,13 +1,14 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management/controllers/task_controller.dart';
 import 'package:task_management/models/task.dart';
+import 'package:task_management/services/notification_services.dart';
 import 'package:task_management/ui/pages/add_task_page.dart';
 import 'package:task_management/ui/size_config.dart';
 import 'package:task_management/ui/theme.dart';
@@ -23,21 +24,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   DateTime _selectedDate = DateTime.parse(DateTime.now().toString());
   final _taskController = Get.put(TaskController());
-  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //     FlutterLocalNotificationsPlugin();
+  var notifyHelper;
 
-  // void initState() {
-  //   super.initState();
-  //   var initializationSettingsAndroid =
-  //       AndroidInitializationSettings('Task Management');
-  //   var initializationSettingsIOs = IOSInitializationSettings();
-
-  //   var initSetttings = InitializationSettings(
-  //       initializationSettingsAndroid);
-
-  //   // flutterLocalNotificationsPlugin.initialize(initSetttings,
-  //   //     onSelectNotification: onSelectNotification);
-  // }
+  @override
+  void initState() {
+    super.initState();
+    notifyHelper = NotifyHelper();
+    notifyHelper.initializeNotification();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +137,15 @@ class _HomePageState extends State<HomePage> {
               Get.changeThemeMode(ThemeMode.light);
             else
               Get.changeThemeMode(ThemeMode.dark);
+            notifyHelper.displayNotification(
+              title: "Theme Changed",
+              body: Get.isDarkMode
+                  ? "Light theme activated."
+                  : "Dark theme activated",
+            );
+
+            //notifyHelper.scheduledNotification();
+            //notifyHelper.periodicalyNotification();
           },
           child: Icon(
               Get.isDarkMode ? FlutterIcons.sun_fea : FlutterIcons.moon_fea,
@@ -170,6 +173,27 @@ class _HomePageState extends State<HomePage> {
               itemCount: _taskController.taskList.length,
               itemBuilder: (context, index) {
                 Task task = _taskController.taskList[index];
+                if (task.repeat == 'Daily') {
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    duration: const Duration(milliseconds: 375),
+                    child: SlideAnimation(
+                      horizontalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                                onTap: () {
+                                  showBottomSheet(context, task);
+                                },
+                                child: TaskTile(task)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
                 if (task.date == DateFormat.yMd().format(_selectedDate)) {
                   return AnimationConfiguration.staggeredList(
                     position: index,
