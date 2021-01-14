@@ -16,6 +16,8 @@ import 'package:task_management/ui/widgets/button.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management/ui/widgets/task_tile.dart';
 
+import '../../services/theme_services.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -133,10 +135,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: context.theme.backgroundColor,
         leading: GestureDetector(
           onTap: () {
-            if (Get.isDarkMode)
-              Get.changeThemeMode(ThemeMode.light);
-            else
-              Get.changeThemeMode(ThemeMode.dark);
+            ThemeService().switchTheme();
             notifyHelper.displayNotification(
               title: "Theme Changed",
               body: Get.isDarkMode
