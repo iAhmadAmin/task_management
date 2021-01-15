@@ -8,6 +8,8 @@ Pending:
 Reminder,
 Repeated tasks,
 
+Important: Feel free to fork and changes and contribute.
+
 UI/UX Credit:
 https://dribbble.com/shots/14557819-Task-Management-App
 
