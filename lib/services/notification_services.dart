@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:flutter/services.dart';
-import 'package:device_info/device_info.dart';
 
 class NotifyHelper {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -29,11 +27,11 @@ class NotifyHelper {
         onSelectNotification: selectNotification);
   }
 
-  Future<void> _configureLocalTimeZone() async {
-    tz.initializeTimeZones();
-    //final String timeZoneName = await platform.invokeMethod('getTimeZoneName');
-    tz.setLocalLocation(tz.getLocation(DateTime.now().timeZoneName));
-  }
+  // Future<void> _configureLocalTimeZone() async {
+  //   tz.initializeTimeZones();
+  //   //final String timeZoneName = await platform.invokeMethod('getTimeZoneName');
+  //   tz.setLocalLocation(tz.getLocation(DateTime.now().timeZoneName));
+  // }
 
   Future selectNotification(String payload) async {
     if (payload != null) {
