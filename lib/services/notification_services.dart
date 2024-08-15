@@ -32,11 +32,7 @@ class NotifyHelper {
   // }
 
   Future selectNotification(String payload) async {
-    if (payload != null) {
-      print('notification payload: $payload');
-    } else {
-      print("Notification Done");
-    }
+    print('notification payload: $payload');
     // await Navigator.push(
     //   context,
     //   MaterialPageRoute<void>(builder: (context) => SecondScreen(payload)),
@@ -106,6 +102,7 @@ class NotifyHelper {
         NotificationDetails(android: androidPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.periodicallyShow(0, 'repeating title',
         'repeating body', RepeatInterval.everyMinute, platformChannelSpecifics,
+        // ignore: deprecated_member_use
         androidAllowWhileIdle: true);
   }
 }
