@@ -8,16 +8,28 @@ const Color pinkClr = Color(0xFFF54B80);
 
 const primaryClr = purpleClr;
 const Color darkGreyClr = Color(0xFF121212);
-Color darkHeaderClr = Colors.grey[800];
+Color darkHeaderClr = Colors.grey[800]!;
 
 class Themes {
   static final light = ThemeData(
-    backgroundColor: Colors.grey[100],
     primaryColor: primaryClr,
     brightness: Brightness.light,
+    colorScheme: ColorScheme(
+      brightness: Brightness.dark,
+      primary: primaryClr,
+      onPrimary: Colors.white,
+      secondary: Colors.black12,
+      onSecondary: Colors.black,
+      error: Colors.red,
+      onError: Colors.red,
+      surface: Colors.white,
+      onSurface: Colors.white,
+      // secondaryVariant: Colors.black,
+    ),
   );
+
   static final dark = ThemeData(
-    backgroundColor: darkGreyClr,
+    primaryColorDark: darkGreyClr,
     brightness: Brightness.dark,
     primaryColor: primaryClr,
   );

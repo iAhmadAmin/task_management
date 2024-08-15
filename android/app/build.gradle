@@ -26,8 +26,8 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 29
-
+    compileSdkVersion 34 // Updated compile SDK version
+    namespace 'com.example.task_management'
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -37,18 +37,15 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.task_management"
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion 33 // Updated target SDK version
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
     }
@@ -59,5 +56,10 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version" // Updated to jdk8
+}
+
+repositories {
+    google()
+    mavenCentral() // Use mavenCentral instead of jcenter
 }

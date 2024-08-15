@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:task_management/controllers/task_controller.dart';
 import 'package:task_management/models/task.dart';
@@ -45,7 +44,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Widget build(BuildContext context) {
     print("add Task date: " + DateFormat.yMd().format(_selectedDate));
     return Scaffold(
-      backgroundColor: context.theme.backgroundColor,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
       appBar: _appBar(),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -74,7 +73,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 hint: DateFormat.yMd().format(_selectedDate),
                 widget: IconButton(
                   icon: (Icon(
-                    FlutterIcons.calendar_ant,
+                    Icons.calendar_month,
                     color: Colors.grey,
                   )),
                   onPressed: () {
@@ -91,7 +90,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       hint: _startTime,
                       widget: IconButton(
                         icon: (Icon(
-                          FlutterIcons.clock_faw5,
+                          Icons.alarm,
                           color: Colors.grey,
                         )),
                         onPressed: () {
@@ -109,7 +108,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       hint: _endTime,
                       widget: IconButton(
                         icon: (Icon(
-                          FlutterIcons.clock_faw5,
+                          Icons.alarm,
                           color: Colors.grey,
                         )),
                         onPressed: () {
@@ -135,10 +134,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         elevation: 4,
                         style: subTitleTextStle,
                         underline: Container(height: 0),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            _selectedRemind = int.parse(newValue);
-                          });
+                        onChanged: (String? newValue) {
+                          if (newValue != null)
+                            setState(() {
+                              _selectedRemind = int.parse(newValue);
+                            });
                         },
                         items: remindList
                             .map<DropdownMenuItem<String>>((int value) {
@@ -166,10 +166,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         elevation: 4,
                         style: subTitleTextStle,
                         underline: Container(height: 0),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            _selectedRepeat = newValue;
-                          });
+                        onChanged: (String? newValue) {
+                          if (newValue != null)
+                            setState(() {
+                              _selectedRepeat = newValue;
+                            });
                         },
                         items: repeatList
                             .map<DropdownMenuItem<String>>((String value) {
@@ -225,7 +226,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   _addTaskToDB() async {
     await _taskController.addTask(
-      task: Task(
+      Task(
         note: _noteController.text,
         title: _titleController.text,
         date: DateFormat.yMd().format(_selectedDate),
@@ -288,7 +289,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   _appBar() {
     return AppBar(
         elevation: 0,
-        backgroundColor: context.theme.backgroundColor,
+        backgroundColor: context.theme.scaffoldBackgroundColor,
         leading: GestureDetector(
           onTap: () {
             Get.back();
@@ -329,7 +330,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;
 
-  _getTimeFromUser({@required bool isStartTime}) async {
+  _getTimeFromUser({required bool isStartTime}) async {
     var _pickedTime = await _showTimePicker();
     print(_pickedTime.format(context));
     String _formatedTime = _pickedTime.format(context);
@@ -357,7 +358,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   _getDateFromUser() async {
-    final DateTime _pickedDate = await showDatePicker(
+    final DateTime? _pickedDate = await showDatePicker(
         context: context,
         initialDate: _selectedDate,
         initialDatePickerMode: DatePickerMode.day,

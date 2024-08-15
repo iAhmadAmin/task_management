@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_management/models/task.dart';
 import 'package:task_management/ui/size_config.dart';
@@ -44,7 +43,7 @@ class TaskTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Icon(
-                      FlutterIcons.clock_faw5,
+                      Icons.alarm,
                       color: Colors.grey[200],
                       size: 15,
                     ),
@@ -72,7 +71,7 @@ class TaskTile extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 10),
             height: 60,
             width: 0.5,
-            color: Colors.grey[200].withOpacity(0.7),
+            color: Colors.grey[200]!.withOpacity(0.7),
           ),
           RotatedBox(
             quarterTurns: 3,

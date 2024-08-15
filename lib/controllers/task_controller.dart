@@ -11,10 +11,10 @@ class TaskController extends GetxController {
     super.onReady();
   }
 
-  final taskList = List<Task>().obs;
+  final RxList<Task> taskList = new RxList<Task>();
 
   // add data to table
-  Future<void> addTask({Task task}) async {
+  Future<int> addTask(Task task) async {
     return await DBHelper.insert(task);
   }
 

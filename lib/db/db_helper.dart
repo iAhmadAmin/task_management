@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:task_management/models/task.dart';
 
 class DBHelper {
-  static Database _db;
+  static Database? _db;
   static final int _version = 1;
   static final String _tableName = 'tasks';
 
@@ -28,20 +28,20 @@ class DBHelper {
 
   static Future<int> insert(Task task) async {
     print("insert function called");
-    return await _db.insert(_tableName, task.toJson());
+    return await _db!.insert(_tableName, task.toJson());
   }
 
   static Future<int> delete(Task task) async =>
-      await _db.delete(_tableName, where: 'id = ?', whereArgs: [task.id]);
+      await _db!.delete(_tableName, where: 'id = ?', whereArgs: [task.id]);
 
   static Future<List<Map<String, dynamic>>> query() async {
     print("query function called");
-    return _db.query(_tableName);
+    return _db!.query(_tableName);
   }
 
   static Future<int> update(int id) async {
     print("update function called");
-    return await _db.rawUpdate('''
+    return await _db!.rawUpdate('''
     UPDATE tasks   
     SET isCompleted = ?
     WHERE id = ?
