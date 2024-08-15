@@ -4,15 +4,12 @@ import 'package:task_management/ui/theme.dart';
 
 class InputField extends StatelessWidget {
   final String title;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hint;
-  final Widget widget;
+  final Widget? widget;
 
   const InputField(
-      {@required this.title,
-      this.controller,
-      @required this.hint,
-      this.widget});
+      {required this.title, this.controller, required this.hint, this.widget});
 
   @override
   Widget build(BuildContext context) {
@@ -53,20 +50,18 @@ class InputField extends StatelessWidget {
                         hintStyle: subTitleTextStle,
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: context.theme.backgroundColor,
                             width: 0,
                           ),
                         ),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: context.theme.backgroundColor,
                             width: 0,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  widget == null ? Container() : widget,
+                  widget == null ? Container() : widget!,
                 ],
               ),
             )

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:task_management/ui/size_config.dart';
 import 'package:task_management/ui/theme.dart';
 
 class MyButton extends StatelessWidget {
-  final Function onTap;
-  final String label;
+  final Function? onTap;
+  final String? label;
 
   MyButton({
     this.onTap,
@@ -14,7 +13,7 @@ class MyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap as void Function()?,
       child: Container(
         height: 50,
         width: 130,
@@ -24,7 +23,7 @@ class MyButton extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            label,
+            label ?? "",
             style: TextStyle(color: Colors.white),
           ),
         ),

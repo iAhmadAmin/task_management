@@ -1,8 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 class NotifyHelper {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -23,8 +19,10 @@ class NotifyHelper {
       // iOS: initializationSettingsIOS,
       // macOS: initializationSettingsMacOS
     );
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: selectNotification);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      // onSelectNotification: selectNotification
+    );
   }
 
   // Future<void> _configureLocalTimeZone() async {
@@ -72,10 +70,9 @@ class NotifyHelper {
   //   );
   // }
 
-  displayNotification({@required String title, @required String body}) async {
+  displayNotification({required String title, required String body}) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-            'your channel id', 'your channel name', 'your channel description',
+        AndroidNotificationDetails('your channel id', 'your channel name',
             importance: Importance.max,
             priority: Priority.high,
             showWhen: false);
@@ -101,8 +98,10 @@ class NotifyHelper {
 
   periodicalyNotification() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails('repeating channel id',
-            'repeating channel name', 'repeating description');
+        AndroidNotificationDetails(
+      'repeating channel id',
+      'repeating channel name',
+    );
     const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.periodicallyShow(0, 'repeating title',
