@@ -6,10 +6,15 @@ class InputField extends StatelessWidget {
   final String title;
   final TextEditingController? controller;
   final String hint;
+  final bool? obsecureText;
   final Widget? widget;
 
   const InputField(
-      {required this.title, this.controller, required this.hint, this.widget});
+      {required this.title,
+      this.controller,
+      required this.hint,
+      this.widget,
+      this.obsecureText});
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +45,7 @@ class InputField extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       autofocus: false,
+                      obscureText: obsecureText ?? false,
                       cursorColor:
                           Get.isDarkMode ? Colors.grey[100] : Colors.grey[600],
                       readOnly: widget == null ? false : true,

@@ -17,7 +17,7 @@ class DBHelper {
         version: _version,
         onCreate: (db, version) {
           return db.execute(
-            "CREATE TABLE $_tableName(id INTEGER PRIMARY KEY AUTOINCREMENT, title STRING, note TEXT, date STRING, startTime STRING, endTime STRING, remind INTEGER, repeat STRING, color INTEGER, isCompleted INTEGER)",
+            "CREATE TABLE $_tableName(id INTEGER PRIMARY KEY AUTOINCREMENT,userId String, title STRING, note TEXT, date STRING, startTime STRING, endTime STRING,priority STRING, remind INTEGER, repeat STRING, color INTEGER, isCompleted INTEGER)",
           );
         },
       );
@@ -29,6 +29,15 @@ class DBHelper {
   static Future<int> insert(Task task) async {
     print("insert function called");
     return await _db!.insert(_tableName, task.toJson());
+  }
+
+  //bulk insert
+  static Future<void> bulkInsert(List<Task> tasks) async {
+    final batch = _db!.batch();
+    tasks.forEach((task) {
+      batch.insert(_tableName, task.toJson());
+    });
+    await batch.commit();
   }
 
   static Future<int> delete(Task task) async =>
@@ -46,5 +55,10 @@ class DBHelper {
     SET isCompleted = ?
     WHERE id = ?
     ''', [1, id]);
+  }
+
+  // drop table
+  static Future<void> deleteTableData() async {
+    await _db!.rawDelete('DELETE FROM $_tableName');
   }
 }
