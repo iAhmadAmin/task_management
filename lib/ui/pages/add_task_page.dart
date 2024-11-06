@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_management/controllers/task_controller.dart';
 import 'package:task_management/models/task.dart';
+import 'package:task_management/services/notification_services.dart';
 import 'package:task_management/ui/theme.dart';
 import 'package:task_management/ui/widgets/button.dart';
 import 'package:task_management/ui/widgets/input_field.dart';
 import 'package:intl/intl.dart';
+// import 'package:timezone/timezone.dart';
 
 class AddTaskPage extends StatefulWidget {
   @override
@@ -19,9 +23,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final TextEditingController _noteController = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
-
-  String _startTime = "8:30 AM";
-  String _endTime = "9:30 AM";
+  List<String> _priorities = [
+    "High",
+    "Medium",
+    "Low",
+  ];
+  String _selectedPriority = "Medium";
+  TimeOfDay _startTime = TimeOfDay.now();
+  TimeOfDay _endTime =
+      TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 1);
   int _selectedColor = 0;
 
   int _selectedRemind = 5;
@@ -87,7 +97,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   Expanded(
                     child: InputField(
                       title: "Start Time",
-                      hint: _startTime,
+                      hint: _startTime.format(context),
                       widget: IconButton(
                         icon: (Icon(
                           Icons.alarm,
@@ -105,7 +115,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   Expanded(
                     child: InputField(
                       title: "End Time",
-                      hint: _endTime,
+                      hint: _endTime.format(context),
                       widget: IconButton(
                         icon: (Icon(
                           Icons.alarm,
@@ -186,6 +196,41 @@ class _AddTaskPageState extends State<AddTaskPage> {
               SizedBox(
                 height: 18.0,
               ),
+              InputField(
+                title: "Priority",
+                hint: _selectedPriority,
+                widget: Row(
+                  children: [
+                    DropdownButton<String>(
+                        //value: _selectedRemind.toString(),
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.grey,
+                        ),
+                        iconSize: 32,
+                        elevation: 4,
+                        style: subTitleTextStle,
+                        underline: Container(height: 0),
+                        onChanged: (String? newValue) {
+                          if (newValue != null)
+                            setState(() {
+                              _selectedPriority = newValue;
+                            });
+                        },
+                        items: _priorities
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList()),
+                    SizedBox(width: 6),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 18.0,
+              ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -209,9 +254,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
   }
 
-  _validateInputs() {
+  _validateInputs() async {
     if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
-      _addTaskToDB();
+      var res = await _addTaskToDB();
+      log(res.toString());
+      //_selectedDate.subtract(Duration(minutes: _selectedRemind))
+      _selectedDate = _selectedDate.copyWith(
+          hour: _startTime.hour, minute: _startTime.minute, second: 00);
+      _selectedDate =
+          _selectedDate.subtract(Duration(minutes: _selectedRemind));
+      NotifyHelper().scheduleNotification(
+          _selectedDate, _titleController.text, _noteController.text);
       Get.back();
     } else if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
       Get.snackbar(
@@ -225,17 +278,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   _addTaskToDB() async {
-    await _taskController.addTask(
+    return await _taskController.addTask(
       Task(
         note: _noteController.text,
         title: _titleController.text,
         date: DateFormat.yMd().format(_selectedDate),
-        startTime: _startTime,
-        endTime: _endTime,
+        startTime: _startTime.format(context),
+        endTime: _endTime.format(context),
         remind: _selectedRemind,
         repeat: _selectedRepeat,
         color: _selectedColor,
         isCompleted: 0,
+        priority: _selectedPriority,
       ),
     );
   }
@@ -332,18 +386,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   _getTimeFromUser({required bool isStartTime}) async {
     var _pickedTime = await _showTimePicker();
-    print(_pickedTime.format(context));
-    String _formatedTime = _pickedTime.format(context);
-    print(_formatedTime);
+    print(_pickedTime.format(context) ?? "time canceled");
+    // var _formatedTime = _pickedTime.format(context);
+    print(_pickedTime ?? "time canceled");
     if (_pickedTime == null)
       print("time canceld");
     else if (isStartTime)
       setState(() {
-        _startTime = _formatedTime;
+        _startTime = _pickedTime;
       });
     else if (!isStartTime) {
       setState(() {
-        _endTime = _formatedTime;
+        _endTime = _pickedTime;
       });
       //_compareTime();
     }
@@ -351,7 +405,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   _showTimePicker() async {
     return showTimePicker(
-      initialTime: TimeOfDay(hour: 8, minute: 30),
+      initialTime: TimeOfDay.now(),
       initialEntryMode: TimePickerEntryMode.input,
       context: context,
     );

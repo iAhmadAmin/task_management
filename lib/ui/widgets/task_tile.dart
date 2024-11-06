@@ -27,14 +27,27 @@ class TaskTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  task.title,
-                  style: GoogleFonts.lato(
-                    textStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      task.title,
+                      style: GoogleFonts.lato(
+                        textStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                    Text("${task.priority}",
+                        style: TextStyle(
+                            color: task.priority == "High"
+                                ? Colors.red
+                                : task.priority == "Medium"
+                                    ? Colors.yellow
+                                    : Colors.green,
+                            fontSize: 14)),
+                  ],
                 ),
                 SizedBox(
                   height: 6,

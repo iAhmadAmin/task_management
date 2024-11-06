@@ -30,10 +30,15 @@
 .pub-cache/
 .pub/
 /build/
+lib/firebase_options.dart
 
 # Web related
-lib/generated_plugin_registrant.dart
 
+#credential related
+lib/generated_plugin_registrant.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+firebase.json
 # Symbolication related
 app.*.symbols
 
