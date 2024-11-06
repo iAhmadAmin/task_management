@@ -51,6 +51,13 @@ class NotifyHelper {
           enableVibration: true,
           playSound: true,
         ));
+
+  Future selectNotification(String payload) async {
+    print('notification payload: $payload');
+    // await Navigator.push(
+    //   context,
+    //   MaterialPageRoute<void>(builder: (context) => SecondScreen(payload)),
+    // );
   }
 
   // Notification details for Android and iOS
@@ -131,5 +138,12 @@ class NotifyHelper {
       notificationDetails(),
       androidAllowWhileIdle: true,
     );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.periodicallyShow(0, 'repeating title',
+        'repeating body', RepeatInterval.everyMinute, platformChannelSpecifics,
+        // ignore: deprecated_member_use
+        androidAllowWhileIdle: true);
+
   }
 }
